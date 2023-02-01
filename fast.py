@@ -179,11 +179,8 @@ async def addTask(request:Request,taskId: str = Form(),task_name: str = Form()):
 @app.get("/callback")
 async def callback(request: Request,state:str,response:RedirectResponse):
     flow.fetch_token(authorization_response=request.url._url)
-    # if not await backend.read("state") == request.args["state"]:
-    #     return "Unauthorized Access"
-
     credentials = flow.credentials
-    
+
     request_session = requests.session()
     cached_session = cachecontrol.CacheControl(request_session)
     token_request = google.auth.transport.requests.Request(session=cached_session)
@@ -193,16 +190,11 @@ async def callback(request: Request,state:str,response:RedirectResponse):
         request=token_request,
         audience=GOOGLE_CLIENT_ID
     )
-    print(id_info)
-    # session = uuid4()
-    # data = _SessionData(name=id_info.get("name"),google_id=id_info.get("sub"))
-    # await backend.create(session, data)
-    # _cookie.attach_to_response(response, session)
+
     await backend.create("login",LoginData(google_id=id_info.get("sub"),name=id_info.get("name")))
     if  db.child("users").child(id_info.get("sub")).get().val() is None:
         db.child("users").child(id_info.get("sub")).push({"name":id_info.get("name"),"email":id_info.get("email")})
-    # session["google_id"] = id_info.get("sub")
-    # session["name"] = id_info.get("name")
+
     return RedirectResponse("/dashboard",status_code=303)
 
 @app.get("/logout")
