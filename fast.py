@@ -199,6 +199,8 @@ async def callback(request: Request,state:str,response:RedirectResponse):
     # await backend.create(session, data)
     # _cookie.attach_to_response(response, session)
     await backend.create("login",LoginData(google_id=id_info.get("sub"),name=id_info.get("name")))
+    if  db.child("users").child(id_info.get("sub")).get().val() is None:
+        db.child("users").child(id_info.get("sub")).push({"name":id_info.get("name"),"email":id_info.get("email")})
     # session["google_id"] = id_info.get("sub")
     # session["name"] = id_info.get("name")
     return RedirectResponse("/dashboard",status_code=303)
