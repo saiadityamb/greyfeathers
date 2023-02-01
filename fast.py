@@ -202,12 +202,3 @@ async def logout():
     await backend.delete("login")
     return RedirectResponse("/",status_code=303)
 
-@app.get("/infog")
-async def infog(response: Response, session_id: UUID = Depends(cookie)):
-    data  = await backend.create("mbsa",SessionData(state="mbsambsa"))
-    return session_id
-
-@app.get("/read")
-async def read(response: Response, session_id: UUID = Depends(cookie)):
-    data  = await backend.read("login")
-    return data.google_id
