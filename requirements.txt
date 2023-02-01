@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+python-multipart
+fastapi_sessions
+os
+pathlib
+uuid
+firebase
+google_auth_oauthlib
